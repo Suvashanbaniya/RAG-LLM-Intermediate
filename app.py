@@ -1,32 +1,23 @@
 from flask import Flask, request, jsonify
-import requests
+from flask_cors import CORS
+from pro import ask_llm
 
 app = Flask(__name__)
 
-llm_url = "http://localhost:11434/api/generate"
+CORS(app)
 
-
-def ask_llm(user_input):
-    response = requests.post(llm_url, json={
-        "model": "llama3",
-        "prompt": user_input,
-        "stream": False
-    })
-
-    data = response.json()
-    return data["response"]
-
+@app.route("/")
+def home():
+    return "Flask is running"
 
 @app.route("/chat", methods=["POST"])
 def chat():
-    user_message = request.json["message"]
+    data = request.get_json()
+    user_message = data["message"]
 
     reply = ask_llm(user_message)
 
-    return jsonify({
-        "response": reply
-    })
-
+    return jsonify({"response": reply})
 
 if __name__ == "__main__":
     app.run(debug=True)

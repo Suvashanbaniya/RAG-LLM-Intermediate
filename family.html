@@ -10,12 +10,17 @@
 <input type="text" id="userInput" placeholder="Ask something..." />
 <button onclick="sendMessage()">Send</button>
 
-<p id="chat"></p>
+<div id="chatbox"></div>
 
 <script>
-async function sendMessage() {
+async function sendMessage(){
 
     let input = document.getElementById("userInput").value;
+    let chatbox = document.getElementById("chatbox");
+
+    if (input.trim() === "") return;
+
+    chatbox.innerHTML += "<p><b>You:</b> " + input + "</p>";
 
     let response = await fetch("http://127.0.0.1:5000/chat", {
         method: "POST",
@@ -29,8 +34,9 @@ async function sendMessage() {
 
     let data = await response.json();
 
-    document.getElementById("chat").innerHTML =
-        "AI: " + data.response;
+    chatbox.innerHTML += "<p><b>AI:</b> " + data.response + "</p>";
+
+    document.getElementById("userInput").value = "";
 }
 </script>
 
