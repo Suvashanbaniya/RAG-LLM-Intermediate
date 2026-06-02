@@ -13,7 +13,8 @@ def home():
 @app.route("/chat", methods=["POST"])
 def chat():
     data = request.get_json()
-    user_message = data["message"]
+    user_message = request.json["message"]
+    print("Question:", user_message)
 
     reply = ask_llm(user_message)
 

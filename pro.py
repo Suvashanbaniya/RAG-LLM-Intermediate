@@ -14,6 +14,7 @@ def load_data():
 
 
 info = json.dumps(load_data(), indent=2)
+print(info)
 
 
 def get_embedding(text):
@@ -35,7 +36,7 @@ def get_embedding(text):
 
 
 # ---------- PREPARE CHUNKS ----------
-chunk_size = 2
+chunk_size = 10
 lines = info.splitlines()
 
 chunks = []
@@ -75,20 +76,33 @@ def ask_llm(user_input):
     top_chunks = similarities[:3]
 
     context = "\n".join([item[1] for item in top_chunks])
-
+    
+    print("\n===============CONTEXT=========")
+    print(context)
+    print("=====================\n")
+    
+    
+    print("\nUSER:",user_input)
+    
+    for score, text in top_chunks:
+        print("\nScore:",round(score,3))
+        print(text)
+    
+    
+    
     prompt = f"""
-You are a helpful AI assistant.
-
-Use ONLY the following context:
-
+You are a family assistant.
+Answser only from the family data below.
+If the answer is not present in the family data, say:
+"I dont know ."
+Family Data:
 {context}
 
 User Question:
 {user_input}
 
-Answer naturally and clearly.
-"""
 
+"""
     try:
         response = requests.post(llm_url, json={
             "model": "llama3",
