@@ -1,0 +1,46 @@
+
+/* To remove the default browser spacing */
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+/* style the whole page */
+
+body{
+    font-family:Arial, sans-serif;
+    background-color:#f4f4f4;
+    display:flex;
+    /*center horizontally*/
+    justify-content:center;
+
+    /*center vertically*/
+    align-items:center;
+
+    /*full screen height */
+    height:100vh;
+}
+
+/* Main chatbot card */
+
+.container{
+    /*width of chatbot*/
+    width:1000px;
+
+   
+
+    background:skyblue;
+    /*rounded corners */
+    border-radius:15px;
+
+    /*shadow effect */
+    box-shadow:0px 5px 15px rgba(0,0,0.2);
+
+    /* prevents content from leaking outside */
+
+    overflow:hidden;
+
+}
+.header{
+    background:#4f46e5;
+}

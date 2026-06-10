@@ -1,16 +1,40 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>AI Chatbot</title>
+    <title>Family ChatBot</title>
+    <link rel="stylesheet" href="style.css">
 </head>
+<!-- first body-->
+
+
+
+
 <body>
+    <div class="container">
 
-<h2>My AI Chatbot</h2>
+        <div class="header">
+            <h2> Family Chatbot🤖</h2>
+        </div>
 
-<input type="text" id="userInput" placeholder="Ask something..." />
-<button onclick="sendMessage()">Send</button>
+        <div id="chatbox" class="chatbox">
 
-<div id="chatbox"></div>
+        </div>
+
+        <div class="input-area">
+
+            <input
+            type="text"
+            id="userInput"
+            placeholder="Ask something" >
+
+
+            <button onclick="sendMessage()">
+                send
+            </button>
+        </div>
+    </div>
+
+
 
 <script>
 async function sendMessage(){
