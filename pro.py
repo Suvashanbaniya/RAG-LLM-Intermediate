@@ -1,20 +1,28 @@
 import requests, json
+import sqlite3
 
 from sklearn.metrics.pairwise import cosine_similarity
 
 embed_url = "http://localhost:11434/api/embeddings"
 llm_url = "http://localhost:11434/api/generate"
 
+conn = sqlite3.connect("family.db",check_same_thread=False)
+cursor = conn.cursor()
+
 temperature = 0.3
 
+messages = [ ]
 
-def load_data():
-    with open("family_data.json", "r") as f:
-        return json.load(f)
+# this is the sqlite data base for the LLM 
+def get_family_data():
+    cursor.execute("SELECT name , relation , details FROM family ")
+    rows = cursor.fetchall()
+    
+    text = ""
+    for row in rows:
+        text += f"{row[0]} ({row[1]}) : {row[2]}\n"
 
-
-info = json.dumps(load_data(), indent=2)
-print(info)
+    return text 
 
 
 def get_embedding(text):
@@ -29,14 +37,16 @@ def get_embedding(text):
         if "embedding" not in data:
             return [0.0] * 768
 
-        return data["embedding"]
+        return data.get("embedding",[0.0] * 768)
 
-    except:
+    except Exception as e :
+        print("Embedding error :",e)
         return [0.0] * 768
 
 
 # ---------- PREPARE CHUNKS ----------
 chunk_size = 10
+info = get_family_data()
 lines = info.splitlines()
 
 chunks = []
@@ -57,7 +67,7 @@ for chunk in chunks:
 
 # ---------- MAIN FUNCTION FOR FLASK ----------
 def ask_llm(user_input):
-
+    
     query_embedding = get_embedding(user_input)
 
     similarities = []
@@ -77,6 +87,8 @@ def ask_llm(user_input):
 
     context = "\n".join([item[1] for item in top_chunks])
     
+    messages.append({"role":"user",
+                     "content":user_input})
     print("\n===============CONTEXT=========")
     print(context)
     print("=====================\n")
@@ -89,6 +101,11 @@ def ask_llm(user_input):
         print(text)
     
     
+    history_text = ""
+    
+    for msg in messages :
+        history_text += f"{msg['role']}: {msg['content']}\n"
+    
     
     prompt = f"""
 You are a family assistant.
@@ -97,10 +114,12 @@ If the answer is not present in the family data, say:
 "I dont know ."
 Family Data:
 {context}
+Conversation history:
+{history_text}
 
 User Question:
 {user_input}
-
+Answer naturally 
 
 """
     try:
@@ -112,7 +131,9 @@ User Question:
         })
 
         data = response.json()
-        return data.get("response", "No response from model")
-
+        answer = data.get("response","No response from model ")
+        messages.append({"role":"assistant","content":answer})
+        return  answer
+       
     except Exception as e:
         return f"LLM Error: {str(e)}"
