@@ -1,12 +1,12 @@
 import sqlite3
 
-# 1. Connect to database (creates file if not exists)
+# Connect to database
 conn = sqlite3.connect("family.db")
 
-# 2. Create cursor (this is what you forgot)
+# Create cursor
 cursor = conn.cursor()
 
-# 3. Create table
+# Create table
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS family (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -16,14 +16,46 @@ CREATE TABLE IF NOT EXISTS family (
 )
 """)
 
-# 4. Insert data
+# Insert data
 cursor.execute("""
 INSERT INTO family (name, relation, details)
-VALUES ('Jeevan Baniya', 'father', 'Born 1973')
+VALUES ('Dev Bahadur Baniya', 'great-grandfather', 'Founder of family lineage')
 """)
 
-# 5. Save changes
+cursor.execute("""
+INSERT INTO family (name, relation, details)
+VALUES ('Keshav Baniya', 'grandfather', 'Police Constable - Tikabhairav')
+""")
+
+cursor.execute("""
+INSERT INTO family (name, relation, details)
+VALUES ('Muiya Baniya', 'grandmother', 'Housewife from Lele, Lalitpur')
+""")
+
+cursor.execute("""
+INSERT INTO family (name, relation, details)
+VALUES ('Jeevan Baniya', 'father', 'Born 1973, Seraphat Chhampi Lalitpur')
+""")
+
+cursor.execute("""
+INSERT INTO family (name, relation, details)
+VALUES ('Muiya Khadka Baniya', 'mother', 'Born in Kathmandu')
+""")
+
+cursor.execute("""
+INSERT INTO family (name, relation, details)
+VALUES ('Suvashan Baniya', 'self', 'Student and AI developer')
+""")
+
+cursor.execute("""
+INSERT INTO family (name, relation, details)
+VALUES ('Suman Baniya', 'brother', 'Brother of Suvashan Baniya')
+""")
+
+# Save changes
 conn.commit()
 
-# 6. Close connection
+# Close database
 conn.close()
+
+print("Database created successfully!")
